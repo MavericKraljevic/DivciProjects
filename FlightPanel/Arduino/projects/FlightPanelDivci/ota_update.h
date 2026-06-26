@@ -93,6 +93,7 @@ static void try_sd_ota() {
 //      the repo. Push. All devices update on next boot.
 
 #define GITHUB_RAW "https://raw.githubusercontent.com/" GITHUB_OWNER "/" GITHUB_REPO "/main/FlightPanel"
+#define GITHUB_FW  "https://raw.githubusercontent.com/" GITHUB_OWNER "/" GITHUB_REPO "/main/FlightPanel/Arduino/projects/FlightPanelDivci/build/esp32-XIP-3.0.2.esp32.esp32s3/FlightPanelDivci.ino.bin"
 
 static lv_obj_t *s_gh_bar = NULL;
 
@@ -141,7 +142,7 @@ void check_github_ota() {
     httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
     httpUpdate.onProgress(gh_ota_progress);
 
-    t_httpUpdate_return ret = httpUpdate.update(dl_client, GITHUB_RAW "/FlightPanelDivci.ino.bin");
+    t_httpUpdate_return ret = httpUpdate.update(dl_client, GITHUB_FW);
 
     if (ret != HTTP_UPDATE_OK) {
         lv_label_set_text(lbl, "Update failed!");
