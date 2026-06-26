@@ -9,6 +9,7 @@
 #include "altitude.h"
 #include "airspeed.h"
 #include "condor.h"
+#include "flash_config.h"
 #include "stats.h"
 #include "ota_update.h"
 #include <Preferences.h>
@@ -45,6 +46,8 @@ static void load_config() {
 }
 
 void setup() {
+    init_flash_storage();   // register USB MSC before USB enumerates
+    load_flash_config();    // read config from flash before USB host can unmount it
     Serial.begin(115200);
 
     Preferences prefs;
