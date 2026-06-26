@@ -6,7 +6,7 @@
 #include "FS.h"
 #include "SD_MMC.h"
 
-// Place firmware.bin in the SD card root to trigger an update on next boot.
+// Place FlightPanelDivci.ino.bin in the SD card root to trigger an update on next boot.
 // The file is deleted after a successful flash so normal boots are unaffected.
 //
 // IMPORTANT: Arduino IDE → Tools → Partition Scheme must support OTA
@@ -14,14 +14,14 @@
 
 static void try_sd_ota() {
 
-    File f = SD_MMC.open("/firmware.bin");
+    File f = SD_MMC.open("/FlightPanelDivci.ino.bin");
     if (!f || f.isDirectory()) {
         if (f) f.close();
         return;
     }
 
     size_t fw_size = f.size();
-    Serial.printf("[OTA] firmware.bin found — %u bytes\n", fw_size);
+    Serial.printf("[OTA] FlightPanelDivci.ino.bin found — %u bytes\n", fw_size);
 
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
 
@@ -67,7 +67,7 @@ static void try_sd_ota() {
     f.close();
 
     if (ok && Update.end() && Update.isFinished()) {
-        SD_MMC.remove("/firmware.bin");
+        SD_MMC.remove("/FlightPanelDivci.ino.bin");
         lv_label_set_text(lbl, "Done! Rebooting...");
         Lvgl_Loop();
         delay(2000);
@@ -83,13 +83,13 @@ static void try_sd_ota() {
 
 // ── GitHub OTA ────────────────────────────────────────────────────────────────
 // On boot (after WiFi connects), fetches FlightPanel/version.txt from the repo.
-// If it differs from FIRMWARE_VERSION, downloads FlightPanel/firmware.bin and
+// If it differs from FIRMWARE_VERSION, downloads FlightPanel/FlightPanelDivci.ino.bin and
 // flashes it. The device reboots automatically on success.
 //
 // To deploy an update:
 //   1. Bump FIRMWARE_VERSION in the .ino.
-//   2. Compile → Sketch → Export Compiled Binary → get firmware.bin.
-//   3. Update FlightPanel/version.txt and replace FlightPanel/firmware.bin in
+//   2. Compile → Sketch → Export Compiled Binary → get FlightPanelDivci.ino.bin.
+//   3. Update FlightPanel/version.txt and replace FlightPanel/FlightPanelDivci.ino.bin in
 //      the repo. Push. All devices update on next boot.
 
 #define GITHUB_RAW "https://raw.githubusercontent.com/" GITHUB_OWNER "/" GITHUB_REPO "/main/FlightPanel"
@@ -141,7 +141,7 @@ void check_github_ota() {
     httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
     httpUpdate.onProgress(gh_ota_progress);
 
-    t_httpUpdate_return ret = httpUpdate.update(dl_client, GITHUB_RAW "/firmware.bin");
+    t_httpUpdate_return ret = httpUpdate.update(dl_client, GITHUB_RAW "/FlightPanelDivci.ino.bin");
 
     if (ret != HTTP_UPDATE_OK) {
         lv_label_set_text(lbl, "Update failed!");
